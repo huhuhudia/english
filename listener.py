@@ -24,16 +24,18 @@ def submitSentence():
     os.system('play submit-sentence.mp3')
 def backup():
     while True:
-        print('!!')
-        time.sleep(60)
-        with open('[history]-[%s].txt'%datetime.datetime.now().date(),'a+') as f:
-            f.write( '\n'+ '\n'.join(words))
+        print('++==++==++==++==++==')
+        time.sleep(30)
+        with open('/home/yyy/Desktop/english/history/[history]-[%s].txt'%datetime.datetime.now().date(),'a+') as f:
+            if len(words) != 0:
+                f.write( '\n'+ '\n'.join(words))
             words.clear()
-            # print("!!!!!!!!!!!!!!!")
-        with open('[sentence]-[%s].md'%datetime.datetime.now().date(),'a+') as f:
-            f.write( '\n'+ '\n'.join(sentences))
+            print("!!!!!!!!!!!!!!!")
+        with open('/home/yyy/Desktop/english/sentence/[sentence]-[%s].md'%datetime.datetime.now().date(),'a+') as f:
+            if len(sentences) != 0:
+                f.write( '\n'+ '\n'.join(sentences))
             sentences.clear()
-            # print("==============")
+            print("==============")
     
 
 t = Process(target=backup)
@@ -49,13 +51,7 @@ def isWord(tmp):
                 return False
         return  True
     return False
-def recongitionInstruction():
-    for phrase in LiveSpeech(): 
-        print(phrase)
-        if phrase == 'terminal':
-            os.system('gnome-terminal')
-        if phrase == 'web':
-            os.system('google-chrome-stable')
+
 
     
 def isSentenceAndTranslation(tmp):
@@ -92,6 +88,10 @@ def recongitionInstruction():
         if phrase == 'google':
             print('open google !!')
             os.system('google-chrome-stable')
+        if phrase == 'open WIFI':
+            os.system('nmcli device wifi hotspot con-name my-hotspot ssid my-hotspot band bg password xwt123456')
+        if phrase == 'open file server':
+            os.system('/home/yyy/YunDisk/chfs  --file=/home/yyy/YunDisk/config')
         if phrase in ['open terminal','google']:
             os.system('play getinstruction.mp3')
 
@@ -111,7 +111,7 @@ while True:
             continue
         lastword = curword
         submitWord()
-        words.append('|%s|%s'%(curword[0],datetime.datetime.now()))
+        words.append('|%s|%s'%(curword,datetime.datetime.now()))
         # print(words)  
         continue  
 
