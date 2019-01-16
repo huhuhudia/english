@@ -15,20 +15,25 @@ cursentence = ""
 lastsentence = ""
 A_Z = 'abcdefghijklmnopqrstuvwxyz\\'
 
-
+HEAD ='| word | time | url |\n| ------------ | ------------ | ------------ |\n'
 def submitWord():
     print('submit word')
     os.system('play submit-word.wav')
 def submitSentence():
     print('submit sentence')
     os.system('play submit-sentence.mp3')
+EXIST = False
 def backup():
+    global EXIST
     while True:
         print('++==++==++==++==++==')
         time.sleep(30)
-        with open('/home/yyy/Desktop/english/history/[history]-[%s].txt'%datetime.datetime.now().date(),'a+') as f:
-            if len(words) != 0:
-                f.write( '\n'+ '\n'.join(words))
+        with open('/home/yyy/Desktop/english/history/[history]-[%s].md'%datetime.datetime.now().date(),'a+') as f:
+            if len(words) != 0 and EXIST == False:
+                f.write( HEAD +'\n'.join(words))
+                EXIST = True
+            elif len(words) !=0 and EXIST == True:
+                f.write('\n' +'\n'.join(words))
             words.clear()
             print("!!!!!!!!!!!!!!!")
         with open('/home/yyy/Desktop/english/sentence/[sentence]-[%s].md'%datetime.datetime.now().date(),'a+') as f:
@@ -57,18 +62,34 @@ def isWord(tmp):
 def isSentenceAndTranslation(tmp):
     
     res = tmp.split('\n')
-    # print(res)
-    # print(len(res))
-    if len(res) != 3:
-        return False
-    line1 = res[0]
-    line2 = res[2]
-    line1 = line1.split(' ')
-    # print(line1)
-    for word in line1:
+    print(res)
+    first_line = ""
+    last_line = ""
+    for line in res:
+        if line.strip():
+            first_line = line
+            break
+    for line in res[::-1]:
+        if line.strip():
+            last_line = line
+            break
+
+    first_line_split = first_line.split(' ')
+    flag1 = False
+    flag2 = False
+    print("first line :\n\n",first_line_split)
+    print('last_lineL \n\n\'',last_line)
+    for word in first_line_split:
         if isWord(word):
-            return True
-    return False
+            flag1 = True
+            break   
+    for word in last_line:
+        if '\u4e00' <= word <= '\u9fa5':
+            flag2 = True
+            break
+    print(flag1 and flag2)
+    return flag1 and flag2
+
 
 backupThread = Thread(target=backup)
 backupThread.start()
@@ -111,7 +132,7 @@ while True:
             continue
         lastword = curword
         submitWord()
-        words.append('|%s|%s'%(curword,datetime.datetime.now()))
+        words.append('|%s|%s|https://fanyi.baidu.com/#en/zh/%s|'%(curword,datetime.datetime.now(),curword))
         # print(words)  
         continue  
 
